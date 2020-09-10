@@ -2,6 +2,8 @@
 const startButton = document.getElementById('start-button');
 const inflateButton = document.getElementById('inflate-button');
 
+//#region Game Logic & Data
+
 /*variable to hold number of clicks*/
 let clickCount = 0;
 
@@ -27,6 +29,9 @@ let clockId = 0;
 
 /*variable to hold time remaining*/
 let timeRemaining = 0;
+
+/*defining currentPlayer globally so we can access it in multiple functions*/
+let currentPlayer = {};
 
 /*what happens when you click the start game button*/
 function startGame() {
@@ -98,7 +103,7 @@ function draw() {
 
 	/*high score tracker logic*/
 	let highPopCountElem = document.getElementById('high-pop-count');
-	highPopCountElem.innerText = highestPopCount.toString();
+	highPopCountElem.innerText = currentPlayer.topScore.toString();
 }
 
 /*logic of what happens after time runs out*/
@@ -112,8 +117,9 @@ function stopGame() {
 	height = 120;
 	width = 100;
 
-	if (currentPopCount > highestPopCount) {
-		highestPopCount = currentPopCount;
+	if (currentPopCount > currentPlayer.topScore) {
+		currentPlayer.topScore = currentPopCount;
+		savePlayers();
 	}
 
 	currentPopCount = 0;
@@ -122,3 +128,55 @@ function stopGame() {
 
 	draw();
 }
+
+//#endregion
+
+//#region  Player Logic
+
+/*array to hold players*/
+let players = [];
+loadPlayers();
+
+/*function to take data from form*/
+function setPlayer(event) {
+	event.preventDefault();
+	let form = event.target;
+
+	let playerName = form.playerName.value;
+
+	currentPlayer = players.find((player) => player.name == playerName);
+
+	if (!currentPlayer) {
+		currentPlayer = { name: playerName, topScore: 0 };
+		players.push(currentPlayer);
+		savePlayers();
+	}
+
+	form.reset();
+	document.getElementById('game').classList.remove('hidden');
+	form.classList.add('hidden');
+	draw();
+}
+
+/*function to switch players*/
+function changePlayer() {
+	document.getElementById('playerForm').classList.remove('hidden');
+	document.getElementById('game').classList.add('hidden');
+}
+
+/*function to take player data and store it to local storage*/
+function savePlayers() {
+	/*have to stringify players array to keep data. Can't use toString*/
+	window.localStorage.setItem('players', JSON.stringify(players));
+}
+
+/*function to retrieve players from local storage*/
+function loadPlayers() {
+	let playersData = JSON.parse(window.localStorage.getItem('players'));
+
+	if (playersData) {
+		players = playersData;
+	}
+}
+
+//#endregion
