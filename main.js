@@ -95,6 +95,10 @@ function draw() {
 	/*track the number of popped balloons*/
 	let popCountElem = document.getElementById('pop-count');
 	popCountElem.innerText = currentPopCount.toString();
+
+	/*high score tracker logic*/
+	let highPopCountElem = document.getElementById('high-pop-count');
+	highPopCountElem.innerText = highestPopCount.toString();
 }
 
 /*logic of what happens after time runs out*/
