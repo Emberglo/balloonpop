@@ -156,8 +156,14 @@ button:hover {
 }
 
 .container {
-	width: 75vw;
+	width: 60vw;
 	margin: auto;
+}
+
+@media screen and (max-width: 700px) {
+	.container {
+		width: 80vw;
+	}
 }
 
 .shadow {
