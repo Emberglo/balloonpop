@@ -1,7 +1,3 @@
-/*permanent references to start and inflate buttons*/
-const startButton = document.getElementById('start-button');
-const inflateButton = document.getElementById('inflate-button');
-
 //#region Game Logic & Data
 
 /*variable to hold number of clicks*/
@@ -15,6 +11,18 @@ let width = 100;
 let inflationRate = 20;
 let maxSize = 300;
 
+/*variable to hold balloon color*/
+let currentColor = 'red';
+
+/*array to hold possible colors*/
+let possibleColors = [
+	'red',
+	'green',
+	'blue',
+	'purple',
+	'pink'
+];
+
 /*initial number of balloons popped*/
 let currentPopCount = 0;
 
@@ -22,7 +30,7 @@ let currentPopCount = 0;
 let highestPopCount = 0;
 
 /*set the time limit of the game*/
-let gameLength = 5000;
+let gameLength = 10000;
 
 /*variable to track the clock id for countdown*/
 let clockId = 0;
@@ -35,10 +43,10 @@ let currentPlayer = {};
 
 /*what happens when you click the start game button*/
 function startGame() {
-	/*disabling start button and enabling inflate button*/
-	startButton.setAttribute('disabled', 'true');
-	inflateButton.removeAttribute('disabled');
-
+	/*Hiding the player controls and displaying the game controls*/
+	document.getElementById('game-controls').classList.remove('hidden');
+	document.getElementById('main-controls').classList.add('hidden');
+	document.getElementById('scoreboard').classList.add('hidden');
 	/*invoke function to start countdown*/
 	startClock();
 
@@ -74,14 +82,29 @@ function inflate() {
 	height += inflationRate;
 	width += inflationRate;
 
+	checkBalloonPop();
+
+	draw();
+}
+
+function checkBalloonPop() {
 	/*resetting balloon once you hit max size*/
 	if (height >= maxSize) {
 		console.log('POP');
+		let balloonElement = document.getElementById('balloon');
+		balloonElement.classList.remove(currentColor);
+		getRandomColor();
+		balloonElement.classList.add(currentColor);
+
 		currentPopCount++;
 		height = 0;
 		width = 0;
 	}
-	draw();
+}
+
+function getRandomColor() {
+	let i = Math.floor(Math.random() * possibleColors.length);
+	currentColor = possibleColors[i];
 }
 
 /*function to contain any logic that touches the DOM/updates the screen*/
@@ -104,13 +127,18 @@ function draw() {
 	/*high score tracker logic*/
 	let highPopCountElem = document.getElementById('high-pop-count');
 	highPopCountElem.innerText = currentPlayer.topScore.toString();
+
+	/*announce current players name*/
+	let playerNameElem = document.getElementById('player-name');
+	playerNameElem.innerText = currentPlayer.name;
 }
 
 /*logic of what happens after time runs out*/
 function stopGame() {
-	/*Disabling inflate button and enabling start button after specified amount of time*/
-	inflateButton.setAttribute('disabled', 'true');
-	startButton.removeAttribute('disabled');
+	/*hiding the game controls and displaying the player controls*/
+	document.getElementById('main-controls').classList.remove('hidden');
+	document.getElementById('game-controls').classList.add('hidden');
+	document.getElementById('scoreboard').classList.remove('hidden');
 
 	/*reset all values after time runs out*/
 	clickCount = 0;
@@ -127,6 +155,8 @@ function stopGame() {
 	stopClock();
 
 	draw();
+
+	drawScoreboard();
 }
 
 //#endregion
@@ -156,6 +186,7 @@ function setPlayer(event) {
 	document.getElementById('game').classList.remove('hidden');
 	form.classList.add('hidden');
 	draw();
+	drawScoreboard();
 }
 
 /*function to switch players*/
@@ -179,4 +210,29 @@ function loadPlayers() {
 	}
 }
 
+function drawScoreboard() {
+	let template = '';
+
+	players.sort((p1, p2) => p2.topScore - p1.topScore);
+
+	players.forEach((player) => {
+		template += `
+            <div class="d-flex space-between">
+                    <span>
+                        <i class="fa fa-user-o" aria-hidden="true"></i>
+                        ${player.name}
+                    </span>
+                    <span>
+                        Score: 
+                        ${player.topScore}
+                    </span>
+                </div>
+        `;
+	});
+
+	document.getElementById('players').innerHTML = template;
+}
+
 //#endregion
+
+drawScoreboard();

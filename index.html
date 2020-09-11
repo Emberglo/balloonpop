@@ -4,44 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Balloon Pop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <div class="shadow container logo text-center">
+            <h1>Balloon Pop!</h1>
+        </div>
+    </header>
 
-    <form onsubmit="setPlayer(event)" id="playerForm">
-        <div>
-            <label for="name">Player Name:</label>
-            <input type="text" name="playerName" id="" required>
-        </div>
-        <button type="submit">Submit</button>
-    </form>
+    <main class="card container">
 
-    <section class="game hidden" id="game">
-        <div>
-            <button onclick="changePlayer()">Change Player</button>
-        </div>
-        <div>
-            <button id="start-button" onclick="startGame()">START GAME</button>
-        </div>
+        <form onsubmit="setPlayer(event)" id="playerForm" class="d-flex space-between">
+            <div>
+                <label for="name"><i class="fa fa-user-o" aria-hidden="true"></i> Player Name:</label>
+                <input type="text" name="playerName" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
 
-        <button id="inflate-button" onclick="inflate()" disabled='true'>
-            Inflate
-            <span id="click-count"></span>
-        </button>
-        <div>
-            <span>Balloons Popped:</span>
-            <span id="pop-count">0</span>
+        <section class="game hidden" id="game">
+            <div class="card bg-dark text-light">
+                <div class="d-flex space-between">
+                    <div>
+                        <i class="fa fa-user-o" aria-hidden="true"></i>
+                        <span id="player-name"></span>
+                    </div>
+                    <div>
+                        <span>High Score:</span>
+                        <span id="high-pop-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div >
+                <div class="d-flex space-around mt-2" id="main-controls">
+                    <button class="btn-dark" onclick="changePlayer()">Change Player</button>
+                </div>
+                <div>
+                    <button id="start-button" onclick="startGame()">START GAME</button>
+                </div>
+            </div>
+
+            <div class="hidden" id="game-controls">
+
+                <div>
+                    <span>Balloons Popped:</span>
+                    <span id="pop-count">0</span>
+                </div>
+                            
+                <div>
+                    <span>Time Remaining:</span>
+                    <span id="countdown">0</span>
+                </div>
+
+                <div class="d-flex game-container">
+                    <div class="pump" onclick="inflate()">
+                       <div class="handle"></div> 
+                       <div class="pump-box">
+                            <span id="click-count"></span>
+                       </div>
+                    </div>
+                    <div id="balloon" class="balloon"></div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+        <div id="scoreboard" class="container card mt-2">
+            <h3 class="text-center">Scoreboard</h3>
+            <div id="players">
+                
+            </div>
         </div>
-        <div>
-            <span>High Score:</span>
-            <span id="high-pop-count">0</span>
-        </div>
-        <div>
-            <span>Time Remaining:</span>
-            <span id="countdown">0</span>
-        </div>
-        <div id="balloon" class="balloon"></div>
-    </section>
 
     <script src="main.js"></script>
 </body>
